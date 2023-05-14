@@ -1,0 +1,13 @@
+version: '3.5'
+services:
+  user-linux:
+    image: user/linux
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-linux
+    volumes:
+      - ROOT\photobackup\linux:/media1
+      - ROOT\photobackup\media\:/media/
+      - ROOT\.aws\credentials:/root/.aws/credentials:ro
+    # restart: 'unless-stopped'

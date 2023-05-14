@@ -1,0 +1,16 @@
+version: '3.5'
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    ports:
+      - 8096:8096
+    #network_mode: 'host'
+    volumes:
+      - ROOT\photobackup\jellyfin\config:/config
+      - ROOT\photobackup\jellyfin\cache:/cache
+      - ROOT\photobackup\media:/media
+    restart: 'unless-stopped'
+    # Optional - alternative address used for autodiscovery
+    #environment:
+      #- JELLYFIN_PublishedServerUrl=http://localhost:8096

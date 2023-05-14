@@ -1,0 +1,13 @@
+version: "2.1"
+services:
+  resilio-sync:
+    image: resilio/sync
+    container_name: resilio-sync
+    environment:
+      - TZ=Etc/UTC
+    ports:
+      - "127.0.0.1:8888:8888"
+      - "127.0.0.1:55555:55555"
+    volumes:
+      - ROOT\photobackup\media\resilio-data:/mnt/sync
+    restart: unless-stopped
