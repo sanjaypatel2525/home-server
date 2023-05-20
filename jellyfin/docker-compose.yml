@@ -7,9 +7,9 @@ services:
       - 8096:8096
     #network_mode: 'host'
     volumes:
-      - ROOT\photobackup\jellyfin\config:/config
-      - ROOT\photobackup\jellyfin\cache:/cache
-      - ROOT\photobackup\media:/media
+      - ${ROOT}/jellyfin/config:/config
+      - ${ROOT}/jellyfin/cache:/cache
+      - ${ROOT}${MEDIA}:/media
     restart: 'unless-stopped'
     # Optional - alternative address used for autodiscovery
     #environment:
