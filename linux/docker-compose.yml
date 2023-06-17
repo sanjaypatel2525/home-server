@@ -8,6 +8,6 @@ services:
     container_name: user-linux
     volumes:
       - ${ROOT}${DOCKER_HOME}:/media1
-      - ${ROOT}${MEDIA}:/media/
+      - ${MEDIA}:/media
       - ${ROOT}${AWS_CREDENTIAL_FILE}:/root/.aws/credentials
     # restart: 'unless-stopped'

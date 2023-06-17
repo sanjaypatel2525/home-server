@@ -1,64 +1,63 @@
 import boto3
 import os
-import pytz
-from datetime import datetime, timedelta
+from datetime import datetime
 
-LOCAL_FOLDER = '/media1' # Folder that needs to be backed up to S3
+print("Starting the s3 upload")
+
+LOCAL_FOLDER = '/media' # Folder that needs to be backed up to S3
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S%z'
-DEFAULT_START_DATE = datetime.strptime('1970-01-01 00:00:00+00:00', DATE_FORMAT) # Default date when there is no file present in S3
 AWS_PROFILE = 'home-server'
-BUCKET_NAME = ''
+BUCKET_NAME = '<BBUCKET_NAME>'
 BUCKET_PATH = 'home-server'
 REGION = 'us-east-1'
 
 boto3.setup_default_session( region_name=REGION, profile_name=AWS_PROFILE),
 
 def get_last_uploaded_file(bucket_name, bucket_path):
-    last_uploaded_time = DEFAULT_START_DATE
+    s3_files = []
     # Create an S3 client
     s3 = boto3.client('s3')
 
     # List objects in the bucket
     response = s3.list_objects_v2(Bucket=bucket_name, Prefix=bucket_path)
-    response = None
+
     # Check if any objects are available
     if response and 'Contents' in response:
         # Sort the objects by the LastModified timestamp in descending order
         sorted_objects = sorted(response['Contents'], key=lambda obj: obj['LastModified'], reverse=True)
-
-        if len(sorted_objects) > 1:
-            # Retrieve the key (filename) of the last uploaded file
-            last_uploaded_time = sorted_objects[0]['LastModified']
-
-            return last_uploaded_time
-        else:
-            print("No files present in folder" + bucket_path)
+        s3_files = [file['Key'].replace(bucket_path + "/", "") for file in sorted_objects]
+        log("Files in s3" + str(s3_files))
     else:
-        print("No objects found in the bucket.")
+        log("No objects found in the bucket.")
 
-    return last_uploaded_time
+    return s3_files
 
 def upload_file_multipart(bucket_name, bucket_path, file_paths):
     # Create an S3 client
     s3 = boto3.client('s3')
+    # Set the part size (1GB in this example)
+    part_size = 1024 * 1024 * 1024
 
     try:
         for file_path in file_paths:
             bucket_file = bucket_path + '/' + os.path.basename(file_path)
-            # Initiate the multipart upload
-            response = s3.create_multipart_upload(Bucket=bucket_name, Key=bucket_file, StorageClass='DEEP_ARCHIVE')
+            log("Uploading file " + file_path)
 
-            # Retrieve the upload ID from the response
-            upload_id = response['UploadId']
+            if os.path.getsize(file_path) == 0:
+                log("File size is zero (empty)")
+                continue
 
             # Open the file for reading
             with open(file_path, 'rb') as file:
-                # Set the part size (5MB in this example)
-                part_size = 5 * 1024 * 1024
-
                 # Initialize part number and parts list
                 part_number = 1
                 parts = []
+
+                # Initiate the multipart upload
+                response = s3.create_multipart_upload(Bucket=bucket_name, Key=bucket_file, StorageClass='DEEP_ARCHIVE')
+
+                # Retrieve the upload ID from the response
+                upload_id = response['UploadId']
 
                 while True:
                     # Read a part-sized chunk from the file
@@ -67,6 +66,8 @@ def upload_file_multipart(bucket_name, bucket_path, file_paths):
                     # Break if end of file
                     if not data:
                         break
+
+                    log("Uploading part :" + str(part_number) + " of file : " + str(file_path))
 
                     # Upload the part
                     response = s3.upload_part(
@@ -94,34 +95,32 @@ def upload_file_multipart(bucket_name, bucket_path, file_paths):
                     MultipartUpload={'Parts': parts}
                 )
 
-                print("File upload completed.")
-                print("Object URL:", response['Location'])
+                log("File upload completed.")
+                log("Object URL:" + str(response['Location']))
 
     except Exception as e:
         # Abort the multipart upload in case of any exception
         s3.abort_multipart_upload(Bucket=bucket_name, Key=bucket_file, UploadId=upload_id)
-        print("File upload failed:", str(e))
+        log("File upload failed:" + str(e))
 
 
-def find_files_modified_after(directory, after_date):
-    file_paths = []
+def find_files_modified_after(directory, files_in_s3):
+    log("fetching file from local folder :" + directory)
 
     items = os.listdir(directory)
-    files = [item for item in items if os.path.isfile(os.path.join(directory, item))]
+    files = [item for item in items if os.path.isfile(os.path.join(directory, item)) and item not in files_in_s3]
     sorted_files = sorted(files, key=lambda x: os.stat(os.path.join(directory, x)).st_mtime)
 
-    # Iterate over the files in the directory):
-    for file_path in sorted_files:
+    log("Files to be uploaded " + str(sorted_files))
 
-        # Get the modification timestamp of the file
-        modification_time = datetime.fromtimestamp(os.path.getmtime(file_path), pytz.utc)
-        # Compare the modification time with the threshold
-        if modification_time > after_date:
-            print(file_path)
-            file_paths.append(file_path)
+    return [(directory + '/' + file) for file in sorted_files]
 
-    return file_paths
+def log(msg) :
+    print("[" + datetime.now().strftime(DATE_FORMAT) + "] " + msg)
 
-last_s3_file_time = get_last_uploaded_file(BUCKET_NAME, BUCKET_PATH)
-file_paths = find_files_modified_after(LOCAL_FOLDER, last_s3_file_time)
+files_in_s3 = get_last_uploaded_file(BUCKET_NAME, BUCKET_PATH)
+
+file_paths = find_files_modified_after(LOCAL_FOLDER, files_in_s3)
+
 upload_file_multipart(BUCKET_NAME, BUCKET_PATH, file_paths)
+
