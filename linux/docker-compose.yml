@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: user-linux
     volumes:
-      - ROOT\photobackup\linux:/media1
-      - ROOT\photobackup\media\:/media/
-      - ROOT\.aws\credentials:/root/.aws/credentials:ro
+      - ${ROOT}${DOCKER_HOME}:/media1
+      - ${ROOT}${MEDIA}:/media/
+      - ${ROOT}${AWS_CREDENTIAL_FILE}:/root/.aws/credentials:ro
     # restart: 'unless-stopped'

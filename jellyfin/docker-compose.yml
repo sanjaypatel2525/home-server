@@ -7,9 +7,9 @@ services:
       - 8096:8096
     #network_mode: 'host'
     volumes:
-      - ${ROOT}/jellyfin/config:/config
-      - ${ROOT}/jellyfin/cache:/cache
-      - ${ROOT}${MEDIA}:/media
+      - ${ROOT}${MEDIA}/jellyfin/config:/config
+      - ${ROOT}${MEDIA}/jellyfin/cache:/cache
+      - ${ROOT}${MEDIA}/resilio-data/folders/ResilioSync:/media
     restart: 'unless-stopped'
     # Optional - alternative address used for autodiscovery
     #environment:
