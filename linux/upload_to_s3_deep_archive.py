@@ -20,7 +20,7 @@ def get_last_uploaded_file(bucket_name, bucket_path):
 
     # List objects in the bucket
     response = s3.list_objects_v2(Bucket=bucket_name, Prefix=bucket_path)
-
+    response = None
     # Check if any objects are available
     if response and 'Contents' in response:
         # Sort the objects by the LastModified timestamp in descending order
@@ -106,17 +106,19 @@ def upload_file_multipart(bucket_name, bucket_path, file_paths):
 def find_files_modified_after(directory, after_date):
     file_paths = []
 
-    # Iterate over the files in the directory
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
+    items = os.listdir(directory)
+    files = [item for item in items if os.path.isfile(os.path.join(directory, item))]
+    sorted_files = sorted(files, key=lambda x: os.stat(os.path.join(directory, x)).st_mtime)
 
-            # Get the modification timestamp of the file
-            modification_time = datetime.fromtimestamp(os.path.getmtime(file_path), pytz.utc)
-            # Compare the modification time with the threshold
-            if modification_time > after_date:
-                print(file_path)
-                file_paths.append(file_path)
+    # Iterate over the files in the directory):
+    for file_path in sorted_files:
+
+        # Get the modification timestamp of the file
+        modification_time = datetime.fromtimestamp(os.path.getmtime(file_path), pytz.utc)
+        # Compare the modification time with the threshold
+        if modification_time > after_date:
+            print(file_path)
+            file_paths.append(file_path)
 
     return file_paths
 
