@@ -9,9 +9,8 @@ RUN python3 -m ensurepip --upgrade
 ENV PYTHONUNBUFFERED=1
 
 RUN pip3 install boto3
-RUN pip3 install boto3
-RUN pip install Pillow
-
+RUN pip3 install pytz
+RUN chmod 755 /media1/start.sh
 
 # Run cron on container startup
 CMD ["/media1/start.sh"]
