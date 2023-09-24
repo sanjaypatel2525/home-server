@@ -1,1 +1,2 @@
 01 20 01 * * python3 /media1/upload_to_s3_deep_archive.py
+00 00 * * * curl https://duckdns.org/update/<bucket>/<token>

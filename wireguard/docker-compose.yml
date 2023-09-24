@@ -1,0 +1,24 @@
+version: '3.5'
+services:
+    wireguard:
+        container_name: wireguard
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/UTC
+            - SERVERURL=${SERVER_IP}
+            - SERVERPORT=51820
+            - PEERS=1
+            - PEERDNS=8.8.8.8
+            - INTERNAL_SUBNET=10.13.13.0
+            - ALLOWEDIPS=0.0.0.0/0
+            - PERSISTENTKEEPALIVE_PEERS=
+            - LOG_CONFS=true
+        network_mode: host
+        volumes:
+            - ${ROOT}${MEDIA}/config:/config
+        restart: unless-stopped
+        image: linuxserver/wireguard
+        cap_add:
+            - NET_ADMIN
+            - SYS_MODULE
