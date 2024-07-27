@@ -13,6 +13,7 @@ This is a google photos alternative. So why do I need this.
 2. [Resilio](https://www.resilio.com/) - Free sync from phone to your local server.
 3. [Duplicati](https://www.duplicati.com/) - Redundancy free open source incremental backup of your local server data to another local storage. 
 4. [Jellyfin](https://jellyfin.org/) - Free open source local media server.
+5. [Photoprism](https://www.photoprism.app/) - ML based free open source media server.
 4. [LibrePhotos](https://docs.librephotos.com/) - Free open source ML based face/object/location detection, Web browser app. 
 4. [Wiredguard](https://www.wireguard.com/) - Free open source VPN
 4. Python Scripts - Uploads your backup to cloud such as s3 deep archive. 
