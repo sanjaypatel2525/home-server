@@ -1,0 +1,2 @@
+## Starting docker.
+sudo docker-compose --env-file ../../private.env up -d

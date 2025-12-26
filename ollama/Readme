@@ -1,0 +1,8 @@
+## Starting/Stopping docker.
+sudo docker-compose --env-file ../../private.env up -d
+
+## Test
+curl -N -s http://localhost:11434/api/generate -d '{
+  "model": "budget-ai",
+  "prompt": "Hello! List three items for a grocery budget."
+}' | jq -j '.response'

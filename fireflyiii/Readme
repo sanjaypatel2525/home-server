@@ -1,0 +1,10 @@
+### Setup crontab on host machine. 
+00 12 1 * * /home/dj5254/server1/home-server/fireflyiii/backup-maria-db.sh >>  /home/dj5254/server1/home-server-media/fireflyiii/log/mariadb_backup.log 2>&1
+
+### Generate oauth keys for api access and back it up
+sudo docker exec -it firefly_iii_core php artisan firefly-iii:laravel-passport-keys
+docker exec firefly_iii_core cat /var/www/html/storage/oauth-private.key > /home/dj5254/server1/home-server-media/resilio-data/folders/ResilioSync/photoprism_ignore/fireflyiii/oauth-private.key
+docker exec firefly_iii_core cat /var/www/html/storage/oauth-public.key > /home/dj5254/server1/home-server-media/resilio-data/folders/ResilioSync/photoprism_ignore/fireflyiii/oauth-public.key
+
+## Starting docker.
+sudo docker-compose --env-file ../../private.env up -d

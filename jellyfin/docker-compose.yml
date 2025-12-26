@@ -5,7 +5,9 @@ services:
     container_name: jellyfin
     ports:
       - 8096:8096
-    #network_mode: 'host'
+    env_file:
+      - ../../private.env
+      - .env
     volumes:
       - ${ROOT}${MEDIA}/jellyfin/config:/config
       - ${ROOT}${MEDIA}/jellyfin/cache:/cache

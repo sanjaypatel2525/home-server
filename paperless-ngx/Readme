@@ -1,0 +1,3 @@
+### Setup crontab on host machine. 
+00 12 1 * * /home/dj5254/server1/home-server/paperless-ngx/paperless-backup-cron.sh >>  /home/dj5254/server1/home-server-media/paperless-ngx/log/paperless_backup.log 2>&1
+

@@ -45,9 +45,9 @@ services:
     ## Before you start the service, please check the following config options (and change them as needed):
     ## https://docs.photoprism.app/getting-started/config-options/
     environment:
-      PHOTOPRISM_ADMIN_USER: "${USERNAME}"                 # admin login username
-      PHOTOPRISM_ADMIN_PASSWORD: "${PASSWORD}"          # initial admin password (8-72 characters)
-      PHOTOPRISM_AUTH_MODE: "${PASSWORD}"               # authentication mode (public, password)
+      PHOTOPRISM_ADMIN_USER: "admin"                 # admin login username
+      PHOTOPRISM_ADMIN_PASSWORD: "password"          # initial admin password (8-72 characters)
+      PHOTOPRISM_AUTH_MODE: "password"               # authentication mode (public, password)
       PHOTOPRISM_SITE_URL: "http://localhost:2342/"  # server URL in the format "http(s)://domain.name(:port)/(path)"
       PHOTOPRISM_DISABLE_TLS: "false"                # disables HTTPS/TLS even if the site URL starts with https:// and a certificate is available
       PHOTOPRISM_DEFAULT_TLS: "true"                 # defaults to a self-signed HTTPS/TLS certificate if no other certificate is available
@@ -78,8 +78,8 @@ services:
       PHOTOPRISM_DATABASE_DRIVER: "mysql"            # MariaDB 10.5.12+ (MySQL successor) offers significantly better performance compared to SQLite
       PHOTOPRISM_DATABASE_SERVER: "mariadb:3306"     # MariaDB database server (hostname:port)
       PHOTOPRISM_DATABASE_NAME: "photoprism"         # MariaDB database schema name
-      PHOTOPRISM_DATABASE_USER: "${USERNAME}"         # MariaDB database user name
-      PHOTOPRISM_DATABASE_PASSWORD: "${PASSWORD}"       # MariaDB database user password
+      PHOTOPRISM_DATABASE_USER: "admin"         # MariaDB database user name
+      PHOTOPRISM_DATABASE_PASSWORD: "password"       # MariaDB database user password
       PHOTOPRISM_SITE_CAPTION: "AI-Powered Photos App"
       PHOTOPRISM_SITE_DESCRIPTION: ""                # meta site description
       PHOTOPRISM_SITE_AUTHOR: ""                     # meta site author
@@ -133,9 +133,9 @@ services:
       MARIADB_AUTO_UPGRADE: "1"
       MARIADB_INITDB_SKIP_TZINFO: "1"
       MARIADB_DATABASE: "photoprism"
-      MARIADB_USER: "${USERNAME}"
-      MARIADB_PASSWORD: "${PASSWORD}"
-      MARIADB_ROOT_PASSWORD: "${PASSWORD}"
+      MARIADB_USER: "admin"
+      MARIADB_PASSWORD: "password"
+      MARIADB_ROOT_PASSWORD: "password"
 
   ## Watchtower upgrades services automatically (optional)
   ## see https://docs.photoprism.app/getting-started/updates/#watchtower

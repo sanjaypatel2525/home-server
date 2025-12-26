@@ -1,0 +1,18 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    env_file:
+      - .env
+      - ../../private.env
+    volumes:
+      - ${ROOT}${MEDIA}/n8n/n8n_data:/home/node/.n8n
+      - ${ROOT}${MEDIA}/resilio-data/folders/ResilioSync/photoprism_ignore/n8n/backups:/home/node/backups/
+    networks:
+      - home-server-net
+networks:
+  home-server-net:
+    external: true

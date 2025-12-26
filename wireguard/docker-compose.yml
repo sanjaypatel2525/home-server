@@ -2,6 +2,9 @@ version: '3.5'
 services:
     wireguard:
         container_name: wireguard
+        env_file:
+            - .env
+            - ../../private.env
         environment:
             - PUID=1000
             - PGID=1000
@@ -16,7 +19,7 @@ services:
             - LOG_CONFS=true
         network_mode: host
         volumes:
-            - ${ROOT}${MEDIA}/config:/config
+            - ${ROOT}${MEDIA}/wireguard/config:/config
         restart: unless-stopped
         image: linuxserver/wireguard
         cap_add:

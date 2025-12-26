@@ -4,8 +4,11 @@ FROM alpine:latest
 RUN apk add --update --no-cache bash dos2unix
 
 # Install python/pip
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip --upgrade
+RUN apk add --update --no-cache python3 py3-virtualenv && ln -sf python3 /usr/bin/python
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --upgrade pip
+
 ENV PYTHONUNBUFFERED=1
 
 RUN pip3 install boto3

@@ -1,0 +1,75 @@
+version: '3.3'
+
+services:
+  fireflyiiiapp:
+    image: fireflyiii/core:latest
+    hostname: fireflyiiiapp
+    container_name: firefly_iii_core
+    restart: always
+    volumes:
+      - ${ROOT}${MEDIA}/resilio-data/folders/ResilioSync/photoprism_ignore/fireflyiii/upload:/var/www/html/storage/upload
+    env_file:
+      - .env
+      - ../../private.env
+    ports:
+      - '8088:8080' # Access via Browser: http://[Host-IP]:8088
+    depends_on:
+      - fireflyiiidb
+    networks:
+      - home-server-net
+
+  fireflyiiidb:
+    image: mariadb:11.4
+    hostname: fireflyiiidb
+    container_name: firefly_iii_db
+    restart: always
+    env_file:
+      - .db.env
+      - ../../private.env
+    volumes:
+      - ${ROOT}${MEDIA}/fireflyiii/db:/var/lib/mysql
+    # No ports here = Secure and no collisions.
+    networks:
+      - home-server-net
+
+  importer:
+    image: fireflyiii/data-importer:latest
+    hostname: fireflyiiiimporter
+    container_name: firefly_iii_importer
+    restart: always
+    volumes:
+      # This is where you will drop your CSV and JSON config files
+      - ${ROOT}${MEDIA}/fireflyiii/import:/import
+    ports:
+      - '8089:8080' # Access via Browser: http://[Host-IP]:8089
+    depends_on:
+      - fireflyiiiapp
+    env_file:
+      - .importer.env
+      - ../../private.env
+    networks:
+      - home-server-net
+
+  cron:
+    image: alpine
+    container_name: firefly_iii_cron
+    restart: always
+    env_file:
+      - .env
+      - ../../private.env
+    networks:
+      - home-server-net
+    command: sh -c "
+      apk add tzdata && \
+      (ln -fs /usr/share/zoneinfo/$$TZ /etc/localtime || true) && \
+      echo \"0 3 * * * wget -qO- http://fireflyiiiapp:8080/api/v1/cron/51938a6e3942e304c4db6ccffd0fc6b2;echo\"
+      | crontab - && \
+      crond -f -L /dev/stdout"
+    depends_on:
+      - fireflyiiiapp
+
+networks:
+  home-server-net:
+    external: true
+
+volumes: {}

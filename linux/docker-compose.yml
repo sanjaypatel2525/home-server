@@ -6,8 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: user-linux
+    env_file:
+      - .env
+      - ../../private.env
     volumes:
-      - ${ROOT}${DOCKER_HOME}:/media1
-      - ${MEDIA}:/media
-      - ${ROOT}${AWS_CREDENTIAL_FILE}:/root/.aws/credentials
+      - ${ROOT}/home-server/linux:/media1
+      - ${TARGET}${MEDIA}/duplicati/backups:/media
+      - ${ROOT}/.aws/credentials:/root/.aws/credentials
     # restart: 'unless-stopped'

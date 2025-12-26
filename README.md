@@ -20,7 +20,7 @@ This is a google photos alternative. So why do I need this.
 
 ## How to run
 1. Checkout repo
-2. Update all environment(.env) files.
+2. move private.env.template to one level up and rename private.env. Update all parameters
 3. Start all container
 4. Install Resilio mobile app, setup Resilio and connect it to you local server Resilio endpoint.
 5. Start Resilio backup. 
